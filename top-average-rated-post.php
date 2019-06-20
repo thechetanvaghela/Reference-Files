@@ -108,7 +108,7 @@ function custom_column( $column, $post_id ) {
 			   $results[$key]['avg_rate'] = $res[0]->avg_rate;
 		  	}
 		  	$new_key = array_search($post_id, array_column($results, 'comment_post_ID'));
-            if($new_key){
+            if($results[$new_key]['avg_rate']){
             echo number_format((float)$results[$new_key]['avg_rate'], 2, '.', '');
         	}
         	else
