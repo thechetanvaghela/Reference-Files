@@ -1,0 +1,125 @@
+<?php
+global $wpdb;
+$limit = 0;
+$months = $wpdb->get_results("SELECT DISTINCT MONTH( post_date ) AS month , YEAR( post_date ) AS year, COUNT( id ) as post_count FROM $wpdb->posts WHERE post_status = 'publish' and post_date <= now( ) and post_type = 'post' GROUP BY month , year ORDER BY post_date DESC");
+foreach($months as $month) :
+    $monthname = date('F', mktime(0, 0, 0, $month->month, 10));
+    $select = "";
+    if(!empty($_GET['month']))
+    {
+        if($_GET['month'] == $month->month)
+        {
+            $select = "actived";
+        }
+    }
+?>
+    <a class="dropdown-item <?php echo $select; ?>" href="<?php echo home_url().'/news/?month='.$month->month;?>"><?php echo $monthname." (".$month->post_count.")"; ?></a>
+<?php 
+endforeach; 
+
+ $news_number   = get_field('post_per_page_item');
+ $news_number = !empty($news_number) ? $news_number : 4;
+ $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
+
+    $news_args = array(
+        'post_type'=>'post',
+        'posts_per_page' => -1,//$news_number,
+        'paged' => $paged,
+        'orderby' => 'date',
+        'order' => 'ASC',
+    );
+    if(!empty($_GET['month']))
+    {
+        $news_args['date_query'] = array(
+            array(
+                /*'year'  => $y,*/
+                'month' => $_GET['month'],//$_GET["month"],
+            ));
+    }
+   
+    $news_loop =  new WP_Query($news_args);
+    if($news_loop -> have_posts() ):
+    ?>
+    <div class="row">
+        <?php
+        while($news_loop->have_posts() ):
+            $news_loop->the_post();
+
+            $news_img = get_stylesheet_directory_uri()."/images/news1.png";
+            $thumbnail_url = wp_get_attachment_image_src(get_post_thumbnail_id(get_the_ID()),'news-thumb' );
+
+            if(!empty($thumbnail_url))
+            {
+                $news_img = $thumbnail_url[0];
+            }
+
+            $timestapm = strtotime(get_the_date());
+            $publish_date = date("F Y",$timestapm);
+            ?>
+                <div class="col-sm-6 col-xs-12 news-two-column">
+                    <div class="box-layout">
+                        <div class="news-image"><img src="<?php echo $news_img; ?>" /></div>
+                        <div class="news-box">
+                            <h6><?php echo get_the_title();?></h6>
+                            <div class="news-button-cover">
+                                <div class="date-cover">
+                                    <ul>
+                                        <li><a href="<?php echo get_the_title();?>"><img src="<?php echo get_stylesheet_directory_uri(); ?>/images/calnder.svg" /> <span><?php echo strtoupper($publish_date);?></span></a></li>
+                                    </ul>
+                                </div>
+                                <a href="<?php echo get_the_permalink();?>" class="comman-border-btn">READ</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+         <?php
+        endwhile;   
+         ?>
+    </div>
+     <?php
+    wp_reset_postdata(); 
+    endif; 
+             
+
+
+########################################################################################
+
+global $wpdb;
+
+$limit = 0;
+$year_prev = null;
+$months = $wpdb->get_results("SELECT DISTINCT MONTH( post_date ) AS month ,	YEAR( post_date ) AS year, COUNT( id ) as post_count FROM $wpdb->posts WHERE post_status = 'publish' and post_date <= now( ) and post_type = 'post' GROUP BY month , year ORDER BY post_date DESC");
+
+foreach($months as $month) :
+
+	$year_current = $month->year;
+	
+	if ($year_current != $year_prev)
+	{
+		if($year_current != date('Y'))
+		{
+		?>
+			</ul>
+		<?php
+		}
+		?>
+
+		<h3>
+			<a href="<?php bloginfo('url') ?>/<?php echo $month->year; ?>/"><?php echo $month->year; ?></a>
+		</h3>	
+		<ul class='list-group'>			
+	<?php 
+	} 
+	?>
+	
+	<li class='list-group-item'>
+		<a href="<?php bloginfo('url') ?>/<?php echo $month->year; ?>/<?php echo date("m", mktime(0, 0, 0, $month->month, 1, $month->year)) ?>"><span class="archive-month"><?php echo date_i18n("F", mktime(0, 0, 0, $month->month, 1, $month->year)) ?></span></a>
+		&nbsp;<span class='label label-default'><?php echo $month->post_count; ?></span>
+	</li>
+	
+	<?php 
+	$year_prev = $year_current;
+
+endforeach; 
+?>
+</ul>
