@@ -1,0 +1,35 @@
+<?php
+/*#
+#	WooCommerce Page IDs
+#*/
+
+# Get The Page IDs
+
+#Shop Page
+$shop_page = get_option( 'woocommerce_shop_page_id' ); 
+
+# Cart Page
+$cart_page = get_option( 'woocommerce_cart_page_id' ); 
+
+# Checkout Page
+$checkout_page = get_option( 'woocommerce_checkout_page_id' );
+
+# Pay Page
+$pay_page_page = get_option( 'woocommerce_pay_page_id' ); 
+
+# ThankYou Page
+$thankyou_page = get_option( 'woocommerce_thanks_page_id' ); 
+
+# My Account Page
+$myaccount_page = get_option( 'woocommerce_myaccount_page_id' ); 
+
+# Edit address Page
+$editaddress_page = get_option( 'woocommerce_edit_address_page_id' ); 
+
+# view Order Page
+$vieworder_page = get_option( 'woocommerce_view_order_page_id' ); 
+
+# Term Page
+$term_page = get_option( 'woocommerce_terms_page_id' ); 
+
+?>
