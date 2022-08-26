@@ -112,7 +112,7 @@ class LogOptionsSettings
 			<div id="crm-log-viewer">
 				<pre><?php echo esc_html( file_get_contents( $viewed_log ) ); ?></pre>
 			</div>
-		<?php else : ?>
+		<?php }else { ?>
 			<div class="updated crm-message inline"><p><?php esc_html_e( 'There are currently no logs to view.', 'crm' ); ?></p></div>
 			<?php 
 		} 
